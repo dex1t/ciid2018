@@ -20,7 +20,10 @@ function setup() {
   console.log('starting');
 
   // Create a YOLO method
-  yolo = ml5.YOLO(video, startDetecting);
+  yolo = ml5.YOLO(video, () => {
+    status.html('Model Loaded👌');
+    detect();
+  });
 
   // Hide the original video
   video.hide();
@@ -29,6 +32,7 @@ function setup() {
 
 function draw() {
   image(video, 0, 0, width, height);
+  console.log('draw')
   for (let i = 0; i < objects.length; i++) {
     noStroke();
     fill(0, 255, 0);
