@@ -38,6 +38,7 @@ function draw() {
   }
 }
 
+let videoFlag = 'blank';
 function detect() {
   yolo.detect(function(results) {
     objects = results;
@@ -47,11 +48,19 @@ function detect() {
 
     if (count > 0) {
       console.log('play')
-      player.playVideo();
+      if (videoFlag != 'movie') {
+        playMovieVideo();
+        // player.playVideo();
+        videoFlag = 'movie'
+      }
       videoStatus.html('Playing video ▶️')
     } else {
       console.log('pause')
-      player.pauseVideo();
+      if (videoFlag != 'blank') {
+        playBlankVideo();
+        // player.pauseVideo();
+        videoFlag = 'blank'
+      }
       videoStatus.html('Pausing video ⏸')
     }
     detect();
@@ -71,17 +80,26 @@ function onYouTubeIframeAPIReady() {
   player = new YT.Player('youtube', {
     height: '360',
     width: '640',
-    videoId: 'g_Czx6qdKJo',
+    videoId: '',
+    videoId: '8tPnX7OPo0Q',
     playerVars: { 'autoplay': 1, 'rel': 0, 'showinfo': 0 },
     events: {
       'onReady': onPlayerReady,
-      'onStateChange': onPlayerStateChange
+      // 'onStateChange': onPlayerStateChange
     }
   });
 }
 
 function onPlayerReady(event) {
   event.target.playVideo();
+}
+
+function playBlankVideo() {
+  player.loadVideoById({'videoId': '8tPnX7OPo0Q'});
+}
+
+function playMovieVideo() {
+  player.loadVideoById({'videoId': 'g_Czx6qdKJo'});
 }
 
 // var done = false;
