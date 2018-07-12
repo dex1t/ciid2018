@@ -1,13 +1,3 @@
-// Copyright (c) 2018 ml5
-//
-// This software is released under the MIT License.
-// https://opensource.org/licenses/MIT
-
-/* ===
-ml5 Example
-Real time Object Detection using YOLO and p5.js
-=== */
-
 let video;
 let yolo;
 let status;
