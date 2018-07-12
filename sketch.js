@@ -29,6 +29,7 @@ function setup() {
   // Hide the original video
   video.hide();
   status = select('#status');
+  videoStatus = select('#video-status');
 }
 
 function draw() {
@@ -48,8 +49,28 @@ function detect() {
   yolo.detect(function(results) {
     objects = results;
 
-    count = _.filter(objects, { 'className': 'person' });
-    status.html(`Number of person: ${count.length}`);
+    count = _.filter(objects, { 'className': 'person' }).length;
+    status.html(`Number of person: ${count}`);
+
+    if (count > 0) {
+      videoControl('playVideo');
+      console.log('play')
+      videoStatus.html('Playing video ▶️')
+    } else {
+      videoControl('pauseVideo');
+      console.log('pause')
+      videoStatus.html('Pausing video ⏸')
+    }
     detect();
   });
+}
+
+$(function(){
+    videoControl("playVideo"); 
+    videoControl('pauseVideo');
+});
+
+function videoControl(action){ 
+  var $playerWindow = $('#popup-youtube-player')[0].contentWindow;
+  $playerWindow.postMessage('{"event":"command","func":"'+action+'","args":""}', '*');
 }
