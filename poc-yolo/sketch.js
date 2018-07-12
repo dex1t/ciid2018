@@ -3,6 +3,7 @@ let yolo;
 let status;
 let objects = [];
 let count;
+let player;
 
 function setup() {
   createCanvas(640, 480);
@@ -20,6 +21,8 @@ function setup() {
   video.hide();
   status = select('#status');
   videoStatus = select('#video-status');
+
+  setupYoutube();
 }
 
 function draw() {
@@ -43,24 +46,48 @@ function detect() {
     status.html(`Number of person: ${count}`);
 
     if (count > 0) {
-      videoControl('playVideo');
       console.log('play')
+      player.playVideo();
       videoStatus.html('Playing video ▶️')
     } else {
-      videoControl('pauseVideo');
       console.log('pause')
+      player.pauseVideo();
       videoStatus.html('Pausing video ⏸')
     }
     detect();
   });
 }
 
-$(function(){
-    videoControl("playVideo"); 
-    videoControl('pauseVideo');
-});
+// --------- youtube -----------
 
-function videoControl(action){ 
-  var $playerWindow = $('#popup-youtube-player')[0].contentWindow;
-  $playerWindow.postMessage('{"event":"command","func":"'+action+'","args":""}', '*');
+function setupYoutube() {
+  let tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  let firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 }
+
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('youtube', {
+    height: '360',
+    width: '640',
+    videoId: 'g_Czx6qdKJo',
+    playerVars: { 'autoplay': 1, 'rel': 0, 'showinfo': 0 },
+    events: {
+      'onReady': onPlayerReady,
+      'onStateChange': onPlayerStateChange
+    }
+  });
+}
+
+function onPlayerReady(event) {
+  event.target.playVideo();
+}
+
+// var done = false;
+// function onPlayerStateChange(event) {
+//   if (event.data == YT.PlayerState.PLAYING && !done) {
+//     // setTimeout(stopVideo, 6000);
+//     done = true;
+//   }
+// }
