@@ -32,7 +32,6 @@ function setup() {
 
 function draw() {
   image(video, 0, 0, width, height);
-  console.log('draw')
   for (let i = 0; i < objects.length; i++) {
     noStroke();
     fill(0, 255, 0);
@@ -44,15 +43,9 @@ function draw() {
   }
 }
 
-
-function startDetecting() {
-  status.html('Model loaded!');
-  detect();
-}
-
 function detect() {
   yolo.detect(function(results) {
     objects = results;
-    detect();
+    // detect();
   });
 }
