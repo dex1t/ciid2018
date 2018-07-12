@@ -12,6 +12,7 @@ let video;
 let yolo;
 let status;
 let objects = [];
+let count;
 
 function setup() {
   createCanvas(640, 480);
@@ -46,6 +47,9 @@ function draw() {
 function detect() {
   yolo.detect(function(results) {
     objects = results;
-    // detect();
+
+    count = _.filter(objects, { 'className': 'person' });
+    status.html(`Number of person: ${count.length}`);
+    detect();
   });
 }
