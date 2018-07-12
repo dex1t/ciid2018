@@ -14,9 +14,9 @@ let status;
 let objects = [];
 
 function setup() {
-  createCanvas(320, 240);
+  createCanvas(640, 480);
   video = createCapture(VIDEO);
-  video.size(320, 240);
+  video.size(640, 480);
   console.log('starting');
 
   // Create a YOLO method
