@@ -36,14 +36,11 @@ let videoIds = [
   'g_Czx6qdKJo',
   'dxWvtMOGAhw',
   'vP_1T4ilm8M',
-  'y31A2NSzZOQ',
-  'g_Czx6qdKJo',
-  'dxWvtMOGAhw',
-  'vP_1T4ilm8M',
-  'y31A2NSzZOQ',
+  'y31A2NSzZOQ'
 ];
 let blankVideoId = '8tPnX7OPo0Q';
 let currentVideoId = 0;
+let triggerCount = 0; // yolo
 
 function setup() {
   createCanvas(640, 480);
@@ -138,12 +135,14 @@ function drawKNN() {
 
             prevPredicted = test;
             test = machine.classify(mfcc);
-            // if (test != prevPredicted) {
+            if (test != prevPredicted) {
               if (test == 1) {
-                player.loadVideoById({'videoId': 'dxWvtMOGAhw'});
-                console.log('next');
+                playNextVideo();
+                console.log('class: 1');
+              } else {
+                console.log('class: others')
               }
-            // }
+            }
 
             singleTrigger = false;
             startTime = millis();
@@ -212,7 +211,7 @@ function detect() {
     count = _.filter(objects, { 'className': 'person' }).length;
     status.html(`Number of person: ${count}`);
 
-    if (count > 0) {
+    if (count > triggerCount) {
       if (videoFlag != 'movie') {
         player.loadVideoById({'videoId': videoIds[currentVideoId]});
         videoFlag = 'movie'
@@ -257,6 +256,17 @@ function onPlayerReady(event) {
   event.target.playVideo();
 }
 
+function playNextVideo() {
+  if (currentVideoId + 1 == videoIds.length) {
+    // loop
+    currentVideoId = 0;
+  } else {
+    currentVideoId = currentVideoId + 1;
+  }
+  player.loadVideoById({'videoId': videoIds[currentVideoId]});
+  console.log('next');
+}
+
 $(function(){
   $("#knn-mode").on( "click", function() {
     yoloMode = false;
@@ -270,8 +280,6 @@ $(function(){
     console.log('change mode: yolo');
   });
   $("#next").on('click', function() {
-    currentVideoId = currentVideoId + 1
-    player.loadVideoById({'videoId': videoIds[currentVideoId]});
-    console.log('next');
+    playNextVideo();
   })
 });
