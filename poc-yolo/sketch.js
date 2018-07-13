@@ -41,7 +41,7 @@ let videoIds = [
 ];
 let blankVideoId = '8tPnX7OPo0Q';
 let currentVideoId = 0;
-let triggerCount = 0; // yolo
+let triggerCount = 1; // yolo
 
 function setup() {
   createCanvas(640, 480);
