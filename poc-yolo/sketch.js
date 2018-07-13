@@ -30,6 +30,7 @@ var timer;
 var test = 0;
 
 let yoloMode = false;
+let demoMode = false;
 let prevPredicted = test;
 
 let videoIds = [
@@ -65,19 +66,26 @@ function setup() {
 }
 
 function draw() {
-  if (yoloMode) {
-    image(video, 0, 0, width, height);
-    for (let i = 0; i < objects.length; i++) {
-      noStroke();
-      fill(0, 255, 0);
-      text(objects[i].className, objects[i].x * width, objects[i].y * height - 5);
-      noFill();
-      strokeWeight(4);
-      stroke(0, 255, 0);
-      rect(objects[i].x * width, objects[i].y * height, objects[i].w * width, objects[i].h * height);
-    }
+  if (demoMode) {
+    drawKNN();
+    drawYOLO();
+  } else if (yoloMode) {
+    drawYOLO();
   } else {
     drawKNN();
+  }
+}
+
+function drawYOLO() {
+  image(video, 0, 0, width, height);
+  for (let i = 0; i < objects.length; i++) {
+    noStroke();
+    fill(0, 255, 0);
+    text(objects[i].className, objects[i].x * width, objects[i].y * height - 5);
+    noFill();
+    strokeWeight(4);
+    stroke(0, 255, 0);
+    rect(objects[i].x * width, objects[i].y * height, objects[i].w * width, objects[i].h * height);
   }
 }
 
@@ -135,14 +143,14 @@ function drawKNN() {
 
             prevPredicted = test;
             test = machine.classify(mfcc);
-            if (test != prevPredicted) {
+            // if (test != prevPredicted) {
               if (test == 1) {
                 playNextVideo();
                 console.log('class: 1');
               } else {
                 console.log('class: others')
               }
-            }
+            // }
 
             singleTrigger = false;
             startTime = millis();
@@ -225,9 +233,9 @@ function detect() {
       videoStatus.html('Pausing video ⏸')
     }
 
-    if (yoloMode) {
+    // if (yoloMode || demoMode) {
       detect();
-    }
+    // }
   });
 }
 
@@ -268,6 +276,10 @@ function playNextVideo() {
 }
 
 $(function(){
+  $("#demo").on( "click", function() {
+    demoMode = true;
+    redraw(); 
+  });
   $("#knn-mode").on( "click", function() {
     yoloMode = false;
     console.log('change mode: knn');
