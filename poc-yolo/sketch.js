@@ -29,8 +29,13 @@ var triggerTimerThreshold = 300;
 var timer; 
 var test = 0;
 
+let yoloMode = false;
+
 function setup() {
   createCanvas(640, 480);
+  audio = new MicrophoneInput(512);
+  startTime = millis();
+
   video = createCapture(VIDEO);
   video.size(640, 480);
 
@@ -46,21 +51,22 @@ function setup() {
   videoStatus = select('#video-status');
 
   setupYoutube();
-
-  audio = new MicrophoneInput(512);
-  startTime = millis();
 }
 
 function draw() {
-  image(video, 0, 0, width, height);
-  for (let i = 0; i < objects.length; i++) {
-    noStroke();
-    fill(0, 255, 0);
-    text(objects[i].className, objects[i].x * width, objects[i].y * height - 5);
-    noFill();
-    strokeWeight(4);
-    stroke(0, 255, 0);
-    rect(objects[i].x * width, objects[i].y * height, objects[i].w * width, objects[i].h * height);
+  if (yoloMode) {
+    image(video, 0, 0, width, height);
+    for (let i = 0; i < objects.length; i++) {
+      noStroke();
+      fill(0, 255, 0);
+      text(objects[i].className, objects[i].x * width, objects[i].y * height - 5);
+      noFill();
+      strokeWeight(4);
+      stroke(0, 255, 0);
+      rect(objects[i].x * width, objects[i].y * height, objects[i].w * width, objects[i].h * height);
+    }
+  } else {
+    drawKNN();
   }
 }
 
@@ -199,7 +205,10 @@ function detect() {
       }
       videoStatus.html('Pausing video ⏸')
     }
-    detect();
+
+    if (yoloMode) {
+      detect();
+    }
   });
 }
 
@@ -237,6 +246,21 @@ function playBlankVideo() {
 function playMovieVideo() {
   player.loadVideoById({'videoId': 'g_Czx6qdKJo'});
 }
+
+$(function(){
+  $("#knn-mode").on( "click", function() {
+    yoloMode = false;
+    console.log('change mode: knn');
+    redraw(); 
+  });
+  $("#yolo-mode").on( "click", function() {
+    yoloMode = true;
+    detect();
+    redraw(); 
+    console.log('change mode: yolo');
+  });
+});
+
 
 // var done = false;
 // function onPlayerStateChange(event) {
