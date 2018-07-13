@@ -30,6 +30,20 @@ var timer;
 var test = 0;
 
 let yoloMode = false;
+let prevPredicted = test;
+
+let videoIds = [
+  'g_Czx6qdKJo',
+  'dxWvtMOGAhw',
+  'vP_1T4ilm8M',
+  'y31A2NSzZOQ',
+  'g_Czx6qdKJo',
+  'dxWvtMOGAhw',
+  'vP_1T4ilm8M',
+  'y31A2NSzZOQ',
+];
+let blankVideoId = '8tPnX7OPo0Q';
+let currentVideoId = 0;
 
 function setup() {
   createCanvas(640, 480);
@@ -122,7 +136,15 @@ function drawKNN() {
         fill(0,255,0);
         if (loudness > loudnessThreshold) {
 
+            prevPredicted = test;
             test = machine.classify(mfcc);
+            // if (test != prevPredicted) {
+              if (test == 1) {
+                player.loadVideoById({'videoId': 'dxWvtMOGAhw'});
+                console.log('next');
+              }
+            // }
+
             singleTrigger = false;
             startTime = millis();
             predictionAlpha = 255;
@@ -192,15 +214,13 @@ function detect() {
 
     if (count > 0) {
       if (videoFlag != 'movie') {
-        playMovieVideo();
-        // player.playVideo();
+        player.loadVideoById({'videoId': videoIds[currentVideoId]});
         videoFlag = 'movie'
       }
       videoStatus.html('Playing video ▶️')
     } else {
       if (videoFlag != 'blank') {
-        playBlankVideo();
-        // player.pauseVideo();
+        player.loadVideoById({'videoId': blankVideoId});
         videoFlag = 'blank'
       }
       videoStatus.html('Pausing video ⏸')
@@ -225,26 +245,16 @@ function onYouTubeIframeAPIReady() {
   player = new YT.Player('youtube', {
     height: '360',
     width: '640',
-    videoId: '',
-    videoId: '8tPnX7OPo0Q',
+    videoId: videoIds[currentVideoId],
     playerVars: { 'autoplay': 1, 'rel': 0, 'showinfo': 0 },
     events: {
       'onReady': onPlayerReady,
-      // 'onStateChange': onPlayerStateChange
     }
   });
 }
 
 function onPlayerReady(event) {
   event.target.playVideo();
-}
-
-function playBlankVideo() {
-  player.loadVideoById({'videoId': '8tPnX7OPo0Q'});
-}
-
-function playMovieVideo() {
-  player.loadVideoById({'videoId': 'g_Czx6qdKJo'});
 }
 
 $(function(){
@@ -259,13 +269,9 @@ $(function(){
     redraw(); 
     console.log('change mode: yolo');
   });
+  $("#next").on('click', function() {
+    currentVideoId = currentVideoId + 1
+    player.loadVideoById({'videoId': videoIds[currentVideoId]});
+    console.log('next');
+  })
 });
-
-
-// var done = false;
-// function onPlayerStateChange(event) {
-//   if (event.data == YT.PlayerState.PLAYING && !done) {
-//     // setTimeout(stopVideo, 6000);
-//     done = true;
-//   }
-// }
