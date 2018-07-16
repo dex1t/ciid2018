@@ -17,7 +17,7 @@ var normalized = [];
 
 var mfcc;
 var loudness = 0;
-var loudnessThreshold = 10;
+var loudnessThreshold = 11;
 var soundReady = false;
 
 //TRIGGER MODE
