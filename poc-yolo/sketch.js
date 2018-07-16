@@ -253,7 +253,7 @@ function onYouTubeIframeAPIReady() {
     height: '360',
     width: '640',
     videoId: videoIds[currentVideoId],
-    origin: 'https://dex1t.github.io/ciid2018ml/',
+    origin: 'https://dex1t.github.io/ciid2018ml/poc-yolo/',
     playerVars: { 'autoplay': 1, 'rel': 0, 'showinfo': 0 },
     events: {
       'onReady': onPlayerReady,
